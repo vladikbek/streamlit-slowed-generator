@@ -12,8 +12,7 @@ st.set_page_config(
 )
 
 st.title("💀 SLOWED & SPED UP GENERATOR")
-st.write("Upload a WAV file to create slowed and sped up versions.")
-st.write("Powered by HOUSE OF PHONK.")
+st.write("POWERED BY HOUSE OF PHONK.")
 
 uploaded_file = st.file_uploader("Choose a WAV file", type=["wav"])
 
