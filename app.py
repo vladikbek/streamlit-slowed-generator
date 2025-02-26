@@ -19,22 +19,19 @@ st.write("Upload a WAV file to create slowed and sped up versions.")
 original_options = WaveSurferOptions(
     wave_color="#4285F4",
     progress_color="#DB4437",
-    height=80,
-    backend="MediaElement"
+    height=80
 )
 
 slowed_options = WaveSurferOptions(
     wave_color="#0F9D58", 
     progress_color="#F4B400",
-    height=80,
-    backend="MediaElement"
+    height=80
 )
 
 sped_up_options = WaveSurferOptions(
     wave_color="#DB4437",
     progress_color="#4285F4",
-    height=80,
-    backend="MediaElement"
+    height=80
 )
 
 uploaded_file = st.file_uploader("Choose a WAV file", type=["wav"])
