@@ -5,6 +5,57 @@ import io
 from pydub import AudioSegment
 from pydub.effects import normalize
 
+# Custom CSS to enhance the theme
+st.markdown("""
+<style>
+    /* Custom styles for a more polished look */
+    .stApp {
+        background-color: #1E1E1E;
+    }
+    
+    /* Button styling */
+    .stButton>button {
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+    .stButton>button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(157, 78, 221, 0.4);
+    }
+    
+    /* Audio player styling */
+    audio {
+        width: 100%;
+        border-radius: 8px;
+        background-color: #2D2D2D;
+    }
+    
+    /* Divider styling */
+    hr {
+        border-color: rgba(157, 78, 221, 0.3);
+        margin: 1.5rem 0;
+    }
+    
+    /* Expander styling */
+    .streamlit-expanderHeader {
+        font-weight: 600;
+        color: #9D4EDD;
+    }
+    
+    /* Title styling */
+    h1 {
+        color: #9D4EDD;
+        font-weight: 800;
+    }
+    
+    /* Subheader styling */
+    h3 {
+        color: #BB86FC;
+        font-weight: 600;
+    }
+</style>
+""", unsafe_allow_html=True)
+
 st.set_page_config(
     page_title="Slowed & Sped Up Generator",
     page_icon="🎵",

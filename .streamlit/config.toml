@@ -1,0 +1,25 @@
+[theme]
+# Primary accent color for interactive elements
+primaryColor = "#9D4EDD"
+
+# Background color for the main content area
+backgroundColor = "#1E1E1E"
+
+# Background color used for the sidebar and most interactive widgets
+secondaryBackgroundColor = "#2D2D2D"
+
+# Color used for almost all text
+textColor = "#FAFAFA"
+
+# Font family for all text in the app, except code blocks
+# Accepted values (serif | sans serif | monospace) 
+# Default: "sans serif"
+font = "sans serif"
+
+# Font family for code blocks
+# Default: "monospace"
+font_code = "JetBrains Mono"
+
+[server]
+# Enable this to have the browser tab open automatically when you run the app
+headless = false 
