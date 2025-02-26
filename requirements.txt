@@ -4,4 +4,4 @@ soundfile==0.12.1
 numpy==1.26.3
 zipfile36==0.1.3
 pydub>=0.25.1
-streamlit-advanced-audio>=0.1.0 
+streamlit-advanced-audio==0.1.1 
