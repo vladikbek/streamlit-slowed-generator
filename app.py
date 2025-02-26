@@ -4,7 +4,7 @@ import zipfile
 import io
 from pydub import AudioSegment
 from pydub.effects import normalize
-from streamlit_advanced_audio import st_audix
+from streamlit_advanced_audio import audix
 import base64
 
 st.set_page_config(
@@ -31,7 +31,7 @@ if uploaded_file is not None:
     
     # Use Audix for the original audio
     audio_bytes = uploaded_file.getvalue()
-    st_audix(
+    audix(
         audio_bytes=audio_bytes,
         sample_rate=44100,  # Default sample rate, will be overridden by the file
         waveform_color="#1DB954",
@@ -94,7 +94,7 @@ if uploaded_file is not None:
         with col1:
             st.write(f"**{display_names[name]}**")
             # Use Audix for each modified version
-            st_audix(
+            audix(
                 audio_bytes=data,
                 sample_rate=audio.frame_rate,
                 waveform_color=speed_versions[name]["color"],
