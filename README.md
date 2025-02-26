@@ -1,4 +1,4 @@
-# Slowed & Sped Up Audio Generator
+# Slowed & Sped Up Generator
 
 A Streamlit web application that allows users to modify the speed of WAV audio files. Create slowed down and sped up versions of your audio files with ease.
 

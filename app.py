@@ -6,13 +6,12 @@ from pydub import AudioSegment
 from pydub.effects import normalize
 
 st.set_page_config(
-    page_title="SLOWED & SPED UP GENERATOR",
-    page_icon="💀",
+    page_title="Slowed & Sped Up Generator",
+    page_icon="💿",
     layout="centered"
 )
 
-st.title("💀 SLOWED & SPED UP GENERATOR")
-st.write("POWERED BY HOUSE OF PHONK.")
+st.title("💿 Slowed & Sped Up Generator")
 
 uploaded_file = st.file_uploader("Choose a WAV file", type=["wav"])
 
