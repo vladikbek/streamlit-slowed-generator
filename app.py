@@ -5,12 +5,12 @@ import io
 from pydub import AudioSegment
 
 st.set_page_config(
-    page_title="Audio Speed Modifier",
+    page_title="Slowed & Sped Up Generator",
     page_icon="🎵",
     layout="centered"
 )
 
-st.title("🎵 Audio Speed Modifier")
+st.title("🎵 Slowed & Sped Up Generator")
 st.write("Upload a WAV file to create slowed and sped up versions.")
 
 uploaded_file = st.file_uploader("Choose a WAV file", type=["wav"])
@@ -65,62 +65,39 @@ if uploaded_file is not None:
         # Create display name for this version
         display_names[name] = f"{original_filename} {suffix}.wav"
     
-    # Display individual download buttons
-    st.subheader("Download Individual Files")
+    # Display all versions with audio player and download button side by side
+    st.subheader("Generated Versions")
     
-    col1, col2 = st.columns(2)
-    
-    with col1:
-        st.write("Slowed Versions:")
-        st.audio(processed_files["slowed_10"], format="audio/wav")
-        st.download_button(
-            label=f"Download {display_names['slowed_10']}",
-            data=processed_files["slowed_10"],
-            file_name=display_names["slowed_10"],
-            mime="audio/wav"
-        )
-        
-        st.audio(processed_files["slowed_20"], format="audio/wav")
-        st.download_button(
-            label=f"Download {display_names['slowed_20']}",
-            data=processed_files["slowed_20"],
-            file_name=display_names["slowed_20"],
-            mime="audio/wav"
-        )
-        
-        st.audio(processed_files["slowed_40"], format="audio/wav")
-        st.download_button(
-            label=f"Download {display_names['slowed_40']}",
-            data=processed_files["slowed_40"],
-            file_name=display_names["slowed_40"],
-            mime="audio/wav"
-        )
-    
-    with col2:
-        st.write("Sped Up Version:")
-        st.audio(processed_files["sped_up_20"], format="audio/wav")
-        st.download_button(
-            label=f"Download {display_names['sped_up_20']}",
-            data=processed_files["sped_up_20"],
-            file_name=display_names["sped_up_20"],
-            mime="audio/wav"
-        )
+    # Display each version with audio player and download button side by side
+    for name, data in processed_files.items():
+        col1, col2 = st.columns([3, 1])
+        with col1:
+            st.write(f"**{display_names[name]}**")
+            st.audio(data, format="audio/wav")
+        with col2:
+            st.write("")  # Add some spacing
+            st.write("")  # Add some spacing
+            st.download_button(
+                label="Download",
+                data=data,
+                file_name=display_names[name],
+                mime="audio/wav"
+            )
+        st.divider()  # Add a divider between versions
     
     # Create a zip file with all versions
-    st.subheader("Download All Versions")
-    
     zip_buffer = io.BytesIO()
     with zipfile.ZipFile(zip_buffer, "w") as zip_file:
-        # Add the original file
-        zip_file.writestr(f"{original_filename}.wav", audio_bytes)
-        
-        # Add all modified versions with their display names
+        # Add all modified versions with their display names (excluding original)
         for name, data in processed_files.items():
             zip_file.writestr(display_names[name], data)
     
+    # Full width primary button for downloading all versions
     st.download_button(
-        label="Download All as ZIP",
+        label="Download All Versions",
         data=zip_buffer.getvalue(),
         file_name=f"{original_filename}_all_versions.zip",
-        mime="application/zip"
+        mime="application/zip",
+        use_container_width=True,
+        type="primary"
     ) 
