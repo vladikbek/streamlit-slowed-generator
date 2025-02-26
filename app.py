@@ -3,6 +3,9 @@ import os
 import zipfile
 import io
 from pydub import AudioSegment
+from pydub.effects import normalize
+from streamlit_advanced_audio import st_audix
+import base64
 
 st.set_page_config(
     page_title="Slowed & Sped Up Generator",
@@ -15,25 +18,38 @@ st.write("Upload a WAV file to create slowed and sped up versions.")
 
 uploaded_file = st.file_uploader("Choose a WAV file", type=["wav"])
 
+# Function to convert audio bytes to base64 for Audix player
+def get_audio_base64(audio_bytes):
+    return base64.b64encode(audio_bytes).decode('utf-8')
+
 if uploaded_file is not None:
     # Get the original filename without extension
     original_filename = os.path.splitext(uploaded_file.name)[0]
     
     # Display audio player for the original file
     st.subheader("Original Audio")
-    st.audio(uploaded_file, format="audio/wav")
+    
+    # Use Audix for the original audio
+    audio_bytes = uploaded_file.getvalue()
+    st_audix(
+        audio_bytes=audio_bytes,
+        sample_rate=44100,  # Default sample rate, will be overridden by the file
+        waveform_color="#1DB954",
+        background_color="#F0F2F6",
+        time_color="#262730",
+        height=120
+    )
     
     # Load the audio directly from the uploaded file bytes
-    audio_bytes = uploaded_file.getvalue()
     audio_io = io.BytesIO(audio_bytes)
     audio = AudioSegment.from_wav(audio_io)
     
     # Create different speed versions with descriptive names
     speed_versions = {
-        "slowed_10": {"factor": 0.9, "suffix": "(SLOWED)"},
-        "slowed_20": {"factor": 0.8, "suffix": "(SUPER SLOWED)"},
-        "slowed_40": {"factor": 0.6, "suffix": "(ULTRA SLOWED)"},
-        "sped_up_20": {"factor": 1.2, "suffix": "(SPED UP)"},
+        "slowed_10": {"factor": 0.9, "suffix": "(SLOWED)", "color": "#1DB954"},
+        "slowed_20": {"factor": 0.8, "suffix": "(SUPER SLOWED)", "color": "#2E77D0"},
+        "slowed_40": {"factor": 0.6, "suffix": "(ULTRA SLOWED)", "color": "#9C27B0"},
+        "sped_up_20": {"factor": 1.2, "suffix": "(SPED UP)", "color": "#FF5722"},
     }
     
     processed_files = {}
@@ -57,6 +73,10 @@ if uploaded_file is not None:
             })
             modified_audio = modified_audio.set_frame_rate(audio.frame_rate)
         
+        # Apply clipping to ensure audio doesn't peak above 0dB
+        # First normalize to ensure we're using the full dynamic range without clipping
+        modified_audio = normalize(modified_audio, headroom=0.1)  # 0.1dB headroom to prevent clipping
+        
         # Export the modified audio to bytes
         output_buffer = io.BytesIO()
         modified_audio.export(output_buffer, format="wav")
@@ -68,12 +88,20 @@ if uploaded_file is not None:
     # Display all versions with audio player and download button side by side
     st.subheader("Generated Versions")
     
-    # Display each version with audio player and download button side by side
+    # Display each version with Audix player and download button side by side
     for name, data in processed_files.items():
         col1, col2 = st.columns([3, 1])
         with col1:
             st.write(f"**{display_names[name]}**")
-            st.audio(data, format="audio/wav")
+            # Use Audix for each modified version
+            st_audix(
+                audio_bytes=data,
+                sample_rate=audio.frame_rate,
+                waveform_color=speed_versions[name]["color"],
+                background_color="#F0F2F6",
+                time_color="#262730",
+                height=120
+            )
         with col2:
             st.write("")  # Add some spacing
             st.write("")  # Add some spacing
