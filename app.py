@@ -9,7 +9,8 @@ from pydub.effects import normalize
 st.set_page_config(
     page_title="Slowed & Sped Up Generator",
     page_icon="💿",
-    layout="centered"
+    layout="centered",
+    initial_sidebar_state="collapsed"
 )
 
 st.title("💿 Slowed & Sped Up Generator")
@@ -23,17 +24,24 @@ fixed_presets = {
     "SUPER_SLOWED": {"default_factor": 0.8, "suffix": "SUPER SLOWED"},
     "ULTRA_SLOWED": {"default_factor": 0.6, "suffix": "ULTRA SLOWED"},
     "SPED_UP": {"default_factor": 1.2, "suffix": "SPED UP"},
+    "SUPER_SPED_UP": {"default_factor": 1.4, "suffix": "SUPER SPED UP"} # New preset
 }
 
 # Store sidebar selections
 sidebar_selections = {}
 
 for key, preset in fixed_presets.items():
-    enabled = st.sidebar.checkbox(f"Enable {preset['suffix']}", value=True, key=f"enable_{key}")
+    # Set default state based on key
+    default_enabled = False if key == "SUPER_SPED_UP" else True
+    enabled = st.sidebar.checkbox(
+        f"Enable {preset['suffix']}", 
+        value=default_enabled, # SUPER SPED UP is off by default
+        key=f"enable_{key}"
+    )
     factor = st.sidebar.slider(
-        f"Factor for {preset['suffix']}",
+        f"Speed for {preset['suffix']}",
         min_value=0.1,
-        max_value=5.0,
+        max_value=2.0,
         value=preset['default_factor'],
         step=0.05,
         format="%.2f",
@@ -157,7 +165,7 @@ if uploaded_file is not None:
         )
 
         # Display all versions in an expander
-        with st.expander("View All Processed Versions", expanded=True): # Expand by default
+        with st.expander("View All Processed Versions", expanded=False): # Expand by default
             # Display original first if it exists
             if "original" in processed_files:
                  info = processed_files["original"]
@@ -175,7 +183,7 @@ if uploaded_file is not None:
             # Display speed versions
             for key, info in processed_files.items():
                 if key != "original": # Skip the original we already displayed
-                    st.subheader(f"{info['suffix']} (Factor: {info['factor']:.2f})")
+                    st.subheader(f"{info['suffix']} (Speed: {info['factor']:.2f})")
                     st.audio(info['data'], format="audio/wav")
                     st.download_button(
                         label=f"Download {info['suffix']} Version",
