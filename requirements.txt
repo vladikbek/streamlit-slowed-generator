@@ -3,4 +3,4 @@ streamlit>=1.28.0
 # soundfile==0.12.1 # Not used directly in current app.py
 # numpy==1.26.3 # Usually a dependency of pandas/streamlit, can often be omitted
 pydub>=0.25.1
-pandas>=1.0 # Required for st.data_editor 
+# pandas>=1.0 # No longer required 

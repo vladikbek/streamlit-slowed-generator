@@ -1,15 +1,16 @@
 # Slowed & Sped Up Generator
 
-A Streamlit web application that allows users to modify the speed of various audio files (WAV, MP3, FLAC, etc.). Create slowed down and sped up versions of your audio files with customizable presets.
+A Streamlit web application that allows users to modify the speed of various audio files (WAV, MP3, FLAC, etc.). Create slowed down and sped up versions of your audio files with adjustable settings.
 
 ## Features
 
-- Upload various audio file formats (requires ffmpeg for non-WAV)
-- Customize speed presets (factor and suffix) dynamically
-- Output all versions in standardized 44.1 kHz, 16-bit WAV format
-- Preview all generated versions in the browser
-- Download individual modified versions
-- Download all versions as a single ZIP file
+- Upload various audio file formats (requires ffmpeg for non-WAV).
+- Configure speed versions (Slowed, Super Slowed, Ultra Slowed, Sped Up) using checkboxes and sliders in the sidebar.
+- Output all versions, including a processed version of the original, in standardized 44.1 kHz, 16-bit WAV format.
+- Normalize all output files to 0 dBFS.
+- Preview all generated versions in the browser.
+- Download individual modified versions.
+- Download all generated versions (including processed original) as a single ZIP file.
 
 ## Installation
 
@@ -38,10 +39,10 @@ streamlit run app.py
 ## Usage
 
 1. Open the application in your web browser.
-2. Modify the speed presets (Suffix and Factor) in the table if desired. You can add or remove presets using the editor.
+2. Open the sidebar (if hidden) to configure the speed versions. Use the checkboxes to enable/disable versions and the sliders to adjust the speed factor for each.
 3. Upload an audio file using the file uploader.
-4. Wait for the processing to complete (progress bar will indicate status).
-5. Preview the generated versions in the "View All Versions" expander.
+4. Wait for the processing to complete (progress bar will indicate status). This includes processing the original file and all enabled speed versions.
+5. Preview the generated versions (including the processed original) in the "View All Processed Versions" expander.
 6. Download individual versions using the respective download buttons or download all versions in a ZIP file using the primary button.
 
 ## Requirements
@@ -49,7 +50,6 @@ streamlit run app.py
 - Python 3.7+
 - Streamlit
 - Pydub
-- Pandas
 - ffmpeg (for handling various audio formats)
 
 ## License
