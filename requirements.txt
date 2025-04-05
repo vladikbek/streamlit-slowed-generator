@@ -1,3 +1,6 @@
-streamlit>=1.30.0
+streamlit>=1.28.0
+# librosa==0.10.1 # Not used directly in current app.py
+# soundfile==0.12.1 # Not used directly in current app.py
+# numpy==1.26.3 # Usually a dependency of pandas/streamlit, can often be omitted
 pydub>=0.25.1
-# FFmpeg is required as a system dependency, not a Python package 
+pandas>=1.0 # Required for st.data_editor 

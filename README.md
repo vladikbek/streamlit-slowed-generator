@@ -1,61 +1,57 @@
 # Slowed & Sped Up Generator
 
-A Streamlit app that allows you to create slowed and sped up versions of audio files, with customizable speed factors and standardized high-quality output.
+A Streamlit web application that allows users to modify the speed of various audio files (WAV, MP3, FLAC, etc.). Create slowed down and sped up versions of your audio files with customizable presets.
 
 ## Features
 
-- Upload MP3 or WAV files in any format or bitrate
-- Standardized output to 44.1 kHz 16-bit WAV format
-- Customizable speed presets
-- Normalized audio to avoid clipping
-- Download all versions in a single ZIP file
+- Upload various audio file formats (requires ffmpeg for non-WAV)
+- Customize speed presets (factor and suffix) dynamically
+- Output all versions in standardized 44.1 kHz, 16-bit WAV format
+- Preview all generated versions in the browser
+- Download individual modified versions
+- Download all versions as a single ZIP file
 
 ## Installation
 
 1. Clone this repository:
-   ```
-   git clone https://github.com/vladikbek/streamlit-slowed-spedup.git
-   cd streamlit-slowed-spedup
-   ```
+```bash
+git clone https://github.com/vladikbek/streamlit-slowed-spedup.git
+cd streamlit-slowed-spedup
+```
 
-2. Install Python dependencies:
-   ```
-   pip install -r requirements.txt
-   ```
+2. Install the required Python packages:
+```bash
+pip install -r requirements.txt
+```
 
-3. Install FFmpeg (system dependency):
+3. **Install ffmpeg**: Pydub relies on ffmpeg for handling various audio formats. Install it using your system's package manager.
+   - On Debian/Ubuntu: `sudo apt update && sudo apt install ffmpeg`
+   - On macOS (using Homebrew): `brew install ffmpeg`
+   - On Windows: Download from the [official ffmpeg site](https://ffmpeg.org/download.html) and add it to your system's PATH.
+   *(Note: For Streamlit Community Cloud deployment, add `ffmpeg` to your `packages.txt` file.)*
 
-   **Ubuntu/Debian:**
-   ```
-   sudo apt update
-   sudo apt install ffmpeg
-   ```
-
-   **macOS (using Homebrew):**
-   ```
-   brew install ffmpeg
-   ```
-
-   **Windows (using Chocolatey):**
-   ```
-   choco install ffmpeg
-   ```
-
-   Or download from [FFmpeg's official website](https://ffmpeg.org/download.html)
+4. Run the application:
+```bash
+streamlit run app.py
+```
 
 ## Usage
 
-1. Run the app:
-   ```
-   streamlit run app.py
-   ```
+1. Open the application in your web browser.
+2. Modify the speed presets (Suffix and Factor) in the table if desired. You can add or remove presets using the editor.
+3. Upload an audio file using the file uploader.
+4. Wait for the processing to complete (progress bar will indicate status).
+5. Preview the generated versions in the "View All Versions" expander.
+6. Download individual versions using the respective download buttons or download all versions in a ZIP file using the primary button.
 
-2. Upload an audio file (MP3 or WAV)
+## Requirements
 
-3. Use the sliders in the sidebar to customize speed factors
+- Python 3.7+
+- Streamlit
+- Pydub
+- Pandas
+- ffmpeg (for handling various audio formats)
 
-4. Preview the results and download all versions
+## License
 
-## Troubleshooting
-
-If you see an error about missing `ffmpeg` or `ffprobe`, make sure FFmpeg is properly installed on your system and available in your PATH. 
+MIT 
