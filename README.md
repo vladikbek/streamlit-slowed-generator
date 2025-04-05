@@ -1,50 +1,61 @@
 # Slowed & Sped Up Generator
 
-A Streamlit web application that allows users to modify the speed of WAV audio files. Create slowed down and sped up versions of your audio files with ease.
+A Streamlit app that allows you to create slowed and sped up versions of audio files, with customizable speed factors and standardized high-quality output.
 
 ## Features
 
-- Upload WAV audio files
-- Create multiple speed variations:
-  - 90% speed (Slowed)
-  - 80% speed (Super Slowed)
-  - 60% speed (Ultra Slowed)
-  - 120% speed (Sped Up)
-- Preview all versions in the browser
-- Download individual modified versions
-- Download all versions as a ZIP file
+- Upload MP3 or WAV files in any format or bitrate
+- Standardized output to 44.1 kHz 16-bit WAV format
+- Customizable speed presets
+- Normalized audio to avoid clipping
+- Download all versions in a single ZIP file
 
 ## Installation
 
 1. Clone this repository:
-```bash
-git clone https://github.com/vladikbek/streamlit-slowed-spedup.git
-cd streamlit-slowed-spedup
-```
+   ```
+   git clone https://github.com/vladikbek/streamlit-slowed-spedup.git
+   cd streamlit-slowed-spedup
+   ```
 
-2. Install the required packages:
-```bash
-pip install -r requirements.txt
-```
+2. Install Python dependencies:
+   ```
+   pip install -r requirements.txt
+   ```
 
-3. Run the application:
-```bash
-streamlit run app.py
-```
+3. Install FFmpeg (system dependency):
+
+   **Ubuntu/Debian:**
+   ```
+   sudo apt update
+   sudo apt install ffmpeg
+   ```
+
+   **macOS (using Homebrew):**
+   ```
+   brew install ffmpeg
+   ```
+
+   **Windows (using Chocolatey):**
+   ```
+   choco install ffmpeg
+   ```
+
+   Or download from [FFmpeg's official website](https://ffmpeg.org/download.html)
 
 ## Usage
 
-1. Open the application in your web browser
-2. Upload a WAV file using the file uploader
-3. Listen to the preview of original and modified versions
-4. Download individual versions or get all versions in a ZIP file
+1. Run the app:
+   ```
+   streamlit run app.py
+   ```
 
-## Requirements
+2. Upload an audio file (MP3 or WAV)
 
-- Python 3.6+
-- Streamlit
-- PyDub
+3. Use the sliders in the sidebar to customize speed factors
 
-## License
+4. Preview the results and download all versions
 
-MIT 
+## Troubleshooting
+
+If you see an error about missing `ffmpeg` or `ffprobe`, make sure FFmpeg is properly installed on your system and available in your PATH. 
