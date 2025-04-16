@@ -5,20 +5,29 @@ import io
 from pydub import AudioSegment
 from pydub.effects import normalize
 
-st.title("🔊 Аудио Конвертер")
+st.title("🔊 Аудио конвертер")
 
-st.markdown("Загрузи один или несколько аудиофайлов для конвертации в стандартный WAV формат (16 бит, 44.1 кГц, нормализация до 0 dBFS).")
+st.markdown("Загрузи один или несколько треков для конвертации в стандартный WAV формат (16 бит, 44.1 кГц, нормализация до 0 dBFS).")
 
 # Allow uploading multiple audio files
 uploaded_files = st.file_uploader(
-    "Выбери аудиофайлы (wav, mp3, flac, и т.д.)",
+    "Выбери один или несколько файлов (wav, mp3, flac, и т.д.)",
     type=["wav", "mp3", "flac", "ogg", "m4a", "aac"], # Add more formats as needed
     accept_multiple_files=True,
     key="uploader_converter" # Unique key for this uploader
 )
 
 # Add a button to trigger processing, disabled if no files are uploaded
-start_processing = st.button("Начать обработку", disabled=(not uploaded_files), key="start_converter", use_container_width=True)
+start_processing = st.button(
+    "Начать обработку", 
+    disabled=(not uploaded_files), 
+    key="start_converter", 
+    use_container_width=True,
+    type="primary" # Make button primary
+)
+
+# Placeholder for status messages
+status_placeholder = st.empty()
 
 if start_processing and uploaded_files:
     converted_files = {} # Store {'original_filename.wav': data_bytes}
@@ -27,7 +36,8 @@ if start_processing and uploaded_files:
     total_files = len(uploaded_files)
     progress_bar = st.progress(0, text="Обработка...")
     
-    st.write(f"Обработка {total_files} файла(ов)...")
+    # Update status placeholder
+    status_placeholder.write(f"Обработка {total_files} файла(ов)...")
 
     for i, uploaded_file in enumerate(uploaded_files):
         original_filename = os.path.splitext(uploaded_file.name)[0]
@@ -58,7 +68,9 @@ if start_processing and uploaded_files:
         # Update progress
         progress_bar.progress((i + 1) / total_files, text=f"Обработка... ({i+1}/{total_files})")
 
+    # Clear progress bar and status message
     progress_bar.empty()
+    status_placeholder.empty()
     st.success("Обработка завершена!")
 
     if errors:

@@ -8,7 +8,7 @@ from pydub.effects import normalize
 
 # Note: Page config is set in the main app.py
 st.title("💿 Генератор Slowed & Sped Up")
-st.markdown("Загрузи аудиофайл, чтобы создать его Slowed и Sped Up версии. Настройки скорости находятся в боковом меню.")
+st.markdown("Загрузи трек, чтобы сделать его Slowed и Sped Up версии. Настройки скорости находятся в боковом меню.")
 
 # --- Sidebar Controls (Managed globally by Streamlit for multi-page apps) ---
 st.sidebar.header("Настроить версии")
@@ -56,13 +56,23 @@ for key, preset in fixed_presets.items():
 
 # Allow uploading various audio formats supported by Pydub/ffmpeg
 uploaded_file = st.file_uploader(
-    "Выбери аудиофайл (wav, mp3, flac, и т.д.)",
+    "Выбери файл (wav, mp3, flac, и т.д.)",
     type=["wav", "mp3", "flac", "ogg", "m4a", "aac"], # Add more formats as needed
     key="uploader_generator" # Unique key for this uploader
 )
 
 # Add a button to trigger processing, disabled if no file is uploaded
-start_processing = st.button("Начать обработку", disabled=(uploaded_file is None), key="start_generator", use_container_width=True)
+start_processing = st.button(
+    "Начать обработку", 
+    disabled=(uploaded_file is None), 
+    key="start_generator", 
+    use_container_width=True,
+    type="primary" # Make button primary
+)
+
+# Placeholder for status messages
+status_placeholder_orig = st.empty()
+status_placeholder_versions = st.empty()
 
 if start_processing and uploaded_file is not None:
     # Get the original filename without extension
@@ -93,7 +103,7 @@ if start_processing and uploaded_file is not None:
     steps_done = 0
 
     # 1. Process Original File
-    st.write("Обработка оригинала...")
+    status_placeholder_orig.write("Обработка оригинала...")
     try:
         original_processed = audio.set_frame_rate(44100).set_sample_width(2)
         original_processed = normalize(original_processed, headroom=0.0) # Normalize to 0dB
@@ -111,46 +121,49 @@ if start_processing and uploaded_file is not None:
     except Exception as e:
         st.error(f"Ошибка обработки оригинала: {e}")
         st.stop()
+    status_placeholder_orig.empty() # Clear original processing message
 
     # 2. Process Enabled Speed Versions
-    st.write("Обработка версий...")
-    # Use the selections captured earlier
-    for key, selection in selections_for_processing.items():
-        if selection["enabled"]:
-            factor = selection["factor"]
-            suffix = selection["suffix"]
-            preset_key = f"preset_{key}"
-            
-            try:
-                # Change the speed
-                modified_audio = audio._spawn(audio.raw_data, overrides={
-                    "frame_rate": int(audio.frame_rate * factor)
-                })
-
-                # Set output format: 44.1 kHz, 16-bit
-                modified_audio = modified_audio.set_frame_rate(44100)
-                modified_audio = modified_audio.set_sample_width(2)
+    if enabled_presets_count > 0:
+        status_placeholder_versions.write("Обработка версий...")
+        # Use the selections captured earlier
+        for key, selection in selections_for_processing.items():
+            if selection["enabled"]:
+                factor = selection["factor"]
+                suffix = selection["suffix"]
+                preset_key = f"preset_{key}"
                 
-                # Normalize audio to 0dB
-                modified_audio = normalize(modified_audio, headroom=0.0)
+                try:
+                    # Change the speed
+                    modified_audio = audio._spawn(audio.raw_data, overrides={
+                        "frame_rate": int(audio.frame_rate * factor)
+                    })
 
-                # Export the modified audio to bytes as WAV
-                output_buffer = io.BytesIO()
-                modified_audio.export(output_buffer, format="wav")
+                    # Set output format: 44.1 kHz, 16-bit
+                    modified_audio = modified_audio.set_frame_rate(44100)
+                    modified_audio = modified_audio.set_sample_width(2)
+                    
+                    # Normalize audio to 0dB
+                    modified_audio = normalize(modified_audio, headroom=0.0)
 
-                # Store data, suffix, and factor
-                processed_files[preset_key] = {
-                    "data": output_buffer.getvalue(),
-                    "suffix": suffix,
-                    "filename": f"{original_filename} ({suffix}).wav",
-                    "factor": factor
-                }
-                steps_done += 1
-                progress_bar.progress(steps_done / total_steps, text=f"Обработка... ({steps_done}/{total_steps})")
-            except Exception as e:
-                 st.error(f"Ошибка обработки версии '{suffix}': {e}")
-                 # Continue processing other versions if one fails
-                 continue 
+                    # Export the modified audio to bytes as WAV
+                    output_buffer = io.BytesIO()
+                    modified_audio.export(output_buffer, format="wav")
+
+                    # Store data, suffix, and factor
+                    processed_files[preset_key] = {
+                        "data": output_buffer.getvalue(),
+                        "suffix": suffix,
+                        "filename": f"{original_filename} ({suffix}).wav",
+                        "factor": factor
+                    }
+                    steps_done += 1
+                    progress_bar.progress(steps_done / total_steps, text=f"Обработка... ({steps_done}/{total_steps})")
+                except Exception as e:
+                    st.error(f"Ошибка обработки версии '{suffix}': {e}")
+                    # Continue processing other versions if one fails
+                    continue 
+        status_placeholder_versions.empty() # Clear versions processing message
 
     progress_bar.empty()
     st.success("Обработка завершена!")
