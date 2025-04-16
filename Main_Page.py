@@ -11,9 +11,6 @@ st.set_page_config(
     }
 )
 
-# Apply dark theme using config setting (more robust than CSS)
-st.config.set_option('theme.base', 'dark')
-
 st.title("🎧 Distrotools")
 
 st.markdown(

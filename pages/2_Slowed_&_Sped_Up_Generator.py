@@ -66,8 +66,7 @@ start_processing = st.button(
     "Начать обработку", 
     disabled=(uploaded_file is None), 
     key="start_generator", 
-    use_container_width=True,
-    type="primary" # Make button primary
+    use_container_width=True
 )
 
 # Placeholder for status messages
