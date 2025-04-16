@@ -1,16 +1,25 @@
-# Slowed & Sped Up Generator
+# 🎧 Audio Tools
 
-A Streamlit web application that allows users to modify the speed of various audio files (WAV, MP3, FLAC, etc.). Create slowed down and sped up versions of your audio files with adjustable settings.
+A Streamlit web application featuring tools for audio manipulation.
 
 ## Features
 
-- Upload various audio file formats (requires ffmpeg for non-WAV).
-- Configure speed versions (Slowed, Super Slowed, Ultra Slowed, Sped Up) using checkboxes and sliders in the sidebar.
-- Output all versions, including a processed version of the original, in standardized 44.1 kHz, 16-bit WAV format.
-- Normalize all output files to 0 dBFS.
-- Preview all generated versions in the browser.
-- Download individual modified versions.
-- Download all generated versions (including processed original) as a single ZIP file.
+This multi-page application provides the following tools (selectable from the sidebar):
+
+**1. Slowed & Sped Up Generator:**
+- Upload a single audio file (various formats supported via ffmpeg).
+- Configure speed versions (Slowed, Super Slowed, Ultra Slowed, Sped Up, Super Sped Up) using checkboxes and sliders in the sidebar.
+- Generates processed versions (including a processed original) in standardized 44.1 kHz, 16-bit WAV format.
+- Normalizes all output files to 0 dBFS.
+- Previews all generated versions.
+- Download individual versions or all versions as a single ZIP file.
+
+**2. Audio Converter:**
+- Upload multiple audio files simultaneously (various formats supported via ffmpeg).
+- Converts all uploaded files to standardized 44.1 kHz, 16-bit WAV format.
+- Normalizes all output files to 0 dBFS.
+- Previews all converted files.
+- Download individual converted files or all converted files as a single ZIP file.
 
 ## Installation
 
@@ -38,12 +47,11 @@ streamlit run app.py
 
 ## Usage
 
-1. Open the application in your web browser.
-2. Open the sidebar (if hidden) to configure the speed versions. Use the checkboxes to enable/disable versions and the sliders to adjust the speed factor for each.
-3. Upload an audio file using the file uploader.
-4. Wait for the processing to complete (progress bar will indicate status). This includes processing the original file and all enabled speed versions.
-5. Preview the generated versions (including the processed original) in the "View All Processed Versions" expander.
-6. Download individual versions using the respective download buttons or download all versions in a ZIP file using the primary button.
+1. Open the application in your web browser (`streamlit run app.py`).
+2. Select the desired tool ("Slowed & Sped Up Generator" or "Audio Converter") from the sidebar.
+3. Follow the instructions on the selected page:
+    - **Generator:** Configure presets in the sidebar, upload a single file, wait for processing, preview, and download.
+    - **Converter:** Upload one or more files, wait for processing, preview, and download.
 
 ## Requirements
 
