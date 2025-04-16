@@ -62,7 +62,7 @@ uploaded_file = st.file_uploader(
 )
 
 # Add a button to trigger processing, disabled if no file is uploaded
-start_processing = st.button("Начать обработку", disabled=(uploaded_file is None), key="start_generator")
+start_processing = st.button("Начать обработку", disabled=(uploaded_file is None), key="start_generator", use_container_width=True)
 
 if start_processing and uploaded_file is not None:
     # Get the original filename without extension
