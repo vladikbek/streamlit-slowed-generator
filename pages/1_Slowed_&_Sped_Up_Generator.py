@@ -8,6 +8,7 @@ from pydub.effects import normalize
 
 # Note: Page config is set in the main app.py
 st.title("💿 Генератор Slowed & Sped Up")
+st.markdown("Загрузи аудиофайл, чтобы создать его Slowed и Sped Up версии. Настройки скорости находятся в боковом меню.")
 
 # --- Sidebar Controls (Managed globally by Streamlit for multi-page apps) ---
 st.sidebar.header("Настроить версии")
@@ -56,13 +57,15 @@ for key, preset in fixed_presets.items():
 
 # Allow uploading various audio formats supported by Pydub/ffmpeg
 uploaded_file = st.file_uploader(
-    "Выберите аудиофайл (wav, mp3, flac, и т.д.)",
+    "Выбери аудиофайл (wav, mp3, flac, и т.д.)",
     type=["wav", "mp3", "flac", "ogg", "m4a", "aac"], # Add more formats as needed
     key="uploader_generator" # Unique key for this uploader
 )
 
+# Add a button to trigger processing, disabled if no file is uploaded
+start_processing = st.button("Начать обработку", disabled=(uploaded_file is None), key="start_generator")
 
-if uploaded_file is not None:
+if start_processing and uploaded_file is not None:
     # Get the original filename without extension
     original_filename = os.path.splitext(uploaded_file.name)[0]
     original_file_wav_name = f"{original_filename}.wav" # Standardized output name
@@ -75,7 +78,7 @@ if uploaded_file is not None:
         audio = AudioSegment.from_file(audio_io)
     except Exception as e:
         st.error(f"Ошибка загрузки аудиофайла: {e}")
-        st.error("Убедитесь, что файл имеет поддерживаемый формат и при необходимости установлен ffmpeg.")
+        st.error("Убедись, что файл имеет поддерживаемый формат и при необходимости установлен ffmpeg.")
         st.stop()
 
     # --- Process Files --- 
@@ -111,7 +114,7 @@ if uploaded_file is not None:
         st.stop()
 
     # 2. Process Enabled Speed Versions
-    st.write("Обработка версий скорости...")
+    st.write("Обработка версий...")
     for key, selection in sidebar_selections.items():
         if selection["enabled"]:
             factor = selection["factor"]

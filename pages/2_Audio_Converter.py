@@ -11,13 +11,16 @@ st.markdown("Загрузи один или несколько аудиофай�
 
 # Allow uploading multiple audio files
 uploaded_files = st.file_uploader(
-    "Выбери аудиофайлы (wav, mp3, flac, и т.д.)",
+    "Выберите аудиофайлы (wav, mp3, flac, и т.д.)",
     type=["wav", "mp3", "flac", "ogg", "m4a", "aac"], # Add more formats as needed
     accept_multiple_files=True,
     key="uploader_converter" # Unique key for this uploader
 )
 
-if uploaded_files:
+# Add a button to trigger processing, disabled if no files are uploaded
+start_processing = st.button("Начать обработку", disabled=(not uploaded_files), key="start_converter")
+
+if start_processing and uploaded_files:
     converted_files = {} # Store {'original_filename.wav': data_bytes}
     errors = {} # Store {'original_filename': error_message}
     
