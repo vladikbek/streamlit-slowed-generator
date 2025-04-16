@@ -22,35 +22,34 @@ fixed_presets = {
     "SUPER_SPED_UP": {"default_factor": 1.4, "suffix": "SUPER SPED UP"} # New preset
 }
 
-# Store sidebar selections
-# Use session state to keep selections consistent across potential reruns within the page
-if 'sidebar_selections' not in st.session_state:
-    st.session_state.sidebar_selections = {}
+# Store the current selections from the sidebar for processing
+selections_for_processing = {}
 
 for key, preset in fixed_presets.items():
-    # Set default state based on key
+    # Set default state for the checkbox (only used on first run for this key)
     default_enabled = False if key == "SUPER_SPED_UP" else True
-    # Check if state exists, otherwise use default
-    current_enabled = st.session_state.sidebar_selections.get(key, {}).get('enabled', default_enabled)
-    current_factor = st.session_state.sidebar_selections.get(key, {}).get('factor', preset['default_factor'])
     
+    # Checkbox state is managed by Streamlit via its key
     enabled = st.sidebar.checkbox(
-        f"Включить {preset['suffix']}",
-        value=current_enabled, 
-        key=f"enable_{key}"
+        f"Включить {preset['suffix']}", 
+        value=default_enabled, # Streamlit uses key to restore state on reruns
+        key=f"enable_{key}" 
     )
+    
+    # Slider state is managed by Streamlit via its key
     factor = st.sidebar.slider(
         f"Скорость для {preset['suffix']}",
         min_value=0.1,
         max_value=2.0,
-        value=current_factor,
+        value=preset['default_factor'], # Streamlit uses key to restore state on reruns
         step=0.05,
         format="%.2f",
         key=f"factor_{key}",
-        disabled=not enabled # Disable slider if checkbox is unchecked
+        disabled=not enabled # Disable based on checkbox's CURRENT value in this run
     )
-    # Update session state
-    st.session_state.sidebar_selections[key] = {"enabled": enabled, "factor": factor, "suffix": preset['suffix']}
+    
+    # Store the current state for later use if processing starts
+    selections_for_processing[key] = {"enabled": enabled, "factor": factor, "suffix": preset['suffix']}
 
 # --- End Sidebar Controls ---
 
@@ -84,11 +83,11 @@ if start_processing and uploaded_file is not None:
     # --- Process Files --- 
     processed_files = {} # Store {'key': {'data': bytes, 'suffix': str, 'factor': float or None}}
     
-    # Use the selections stored in session state
-    sidebar_selections = st.session_state.sidebar_selections
-
+    # Use the selections captured during the sidebar rendering pass
+    # No need to read from st.session_state here
+    
     # Calculate total steps for progress bar (1 for original + number of enabled presets)
-    enabled_presets_count = sum(1 for key, sel in sidebar_selections.items() if sel["enabled"]) 
+    enabled_presets_count = sum(1 for key, sel in selections_for_processing.items() if sel["enabled"]) 
     total_steps = 1 + enabled_presets_count
     progress_bar = st.progress(0, text="Обработка...")
     steps_done = 0
@@ -115,7 +114,8 @@ if start_processing and uploaded_file is not None:
 
     # 2. Process Enabled Speed Versions
     st.write("Обработка версий...")
-    for key, selection in sidebar_selections.items():
+    # Use the selections captured earlier
+    for key, selection in selections_for_processing.items():
         if selection["enabled"]:
             factor = selection["factor"]
             suffix = selection["suffix"]
