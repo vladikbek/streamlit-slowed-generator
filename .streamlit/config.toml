@@ -1,6 +1,3 @@
 [theme]
 base="light"
 primaryColor="green"
-
-[ui]
-sidebar_collapsed = true
