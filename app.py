@@ -5,8 +5,15 @@ import io
 from pydub import AudioSegment
 from pydub.effects import normalize
 
-# Note: Page config is set in the main app.py
-st.title("💿 Slowed & Sped Up Generator")
+# --- Page Config ---
+st.set_page_config(
+    page_title="Slowed Generator",
+    page_icon="⏯️",
+    layout="centered",
+    initial_sidebar_state="collapsed"
+)
+
+st.title("💿 Slowed Generator")
 st.markdown("Upload a track to create Slowed and Sped Up versions. Speed settings are in the sidebar.")
 
 # --- Sidebar Controls (Managed globally by Streamlit for multi-page apps) ---
