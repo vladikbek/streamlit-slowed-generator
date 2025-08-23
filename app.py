@@ -22,11 +22,12 @@ with st.sidebar:
 
     # Define fixed presets with default factors
     fixed_presets = {
-        "SLOWED": {"default_factor": 0.9, "suffix": "SLOWED"},
-        "SUPER_SLOWED": {"default_factor": 0.8, "suffix": "SUPER SLOWED"},
-        "ULTRA_SLOWED": {"default_factor": 0.6, "suffix": "ULTRA SLOWED"},
-        "SPED_UP": {"default_factor": 1.2, "suffix": "SPED UP"},
-        "SUPER_SPED_UP": {"default_factor": 1.4, "suffix": "SUPER SPED UP"} # New preset
+        "SLOWED": {"default_factor": 0.9, "suffix": "Slowed"},
+        "SUPER_SLOWED": {"default_factor": 0.8, "suffix": "Super Slowed"},
+        "ULTRA_SLOWED": {"default_factor": 0.6, "suffix": "Ultra Slowed"},
+        "SPED_UP": {"default_factor": 1.2, "suffix": "Sped Up"},
+        "MEGA_SLOWED": {"default_factor": 0.5, "suffix": "Mega Slowed"},
+        "SUPER_SPED_UP": {"default_factor": 1.4, "suffix": "Super Sped Up"}
     }
 
     # Store the current selections from the sidebar for processing
@@ -34,7 +35,7 @@ with st.sidebar:
 
     for key, preset in fixed_presets.items():
         # Set default state for the checkbox (only used on first run for this key)
-        default_enabled = False if key == "SUPER_SPED_UP" else True
+        default_enabled = False if key in ("SUPER_SPED_UP", "MEGA_SLOWED") else True
         
         # Checkbox state is managed by Streamlit via its key
         enabled = st.checkbox(
