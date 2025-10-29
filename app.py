@@ -20,15 +20,41 @@ st.markdown("Upload a track to create Slowed and Sped Up versions. Speed setting
 with st.sidebar:
     st.header("Configure Versions")
 
-    # Define fixed presets with default factors
+    # Define fixed presets with default values for speed (percentage) and pitch (semitones)
     fixed_presets = {
-        "SLOWED": {"default_factor": 0.9, "suffix": "Slowed"},
-        "SUPER_SLOWED": {"default_factor": 0.8, "suffix": "Super Slowed"},
-        "ULTRA_SLOWED": {"default_factor": 0.6, "suffix": "Ultra Slowed"},
-        "SPED_UP": {"default_factor": 1.2, "suffix": "Sped Up"},
-        "MEGA_SLOWED": {"default_factor": 0.5, "suffix": "Mega Slowed"},
-        "SUPER_SPED_UP": {"default_factor": 1.4, "suffix": "Super Sped Up"}
+        "SLOWED": {
+            "suffix": "Slowed",
+            "defaults": {"speed_factor": 0.9, "speed_percent": 90, "pitch_semitones": -2}
+        },
+        "SUPER_SLOWED": {
+            "suffix": "Super Slowed",
+            "defaults": {"speed_factor": 0.8, "speed_percent": 80, "pitch_semitones": -4}
+        },
+        "ULTRA_SLOWED": {
+            "suffix": "Ultra Slowed",
+            "defaults": {"speed_factor": 0.6, "speed_percent": 60, "pitch_semitones": -9}
+        },
+        "SPED_UP": {
+            "suffix": "Sped Up",
+            "defaults": {"speed_factor": 1.2, "speed_percent": 120, "pitch_semitones": 3}
+        },
+        "MEGA_SLOWED": {
+            "suffix": "Mega Slowed",
+            "defaults": {"speed_factor": 0.5, "speed_percent": 50, "pitch_semitones": -12}
+        },
+        "SUPER_SPED_UP": {
+            "suffix": "Super Sped Up",
+            "defaults": {"speed_factor": 1.4, "speed_percent": 140, "pitch_semitones": 6}
+        }
     }
+
+    mode_label = st.radio(
+        "Adjustment mode",
+        options=("Speed (%)", "Pitch (semitones)"),
+        index=0,
+        key="mode_selector"
+    )
+    mode = "speed" if mode_label.startswith("Speed") else "pitch"
 
     # Store the current selections from the sidebar for processing
     selections_for_processing = {}
@@ -36,28 +62,48 @@ with st.sidebar:
     for key, preset in fixed_presets.items():
         # Set default state for the checkbox (only used on first run for this key)
         default_enabled = False if key in ("SUPER_SPED_UP", "MEGA_SLOWED") else True
-        
+
         # Checkbox state is managed by Streamlit via its key
         enabled = st.checkbox(
-            f"Enable {preset['suffix']}", 
+            f"Enable {preset['suffix']}",
             value=default_enabled, # Streamlit uses key to restore state on reruns
-            key=f"enable_{key}" 
+            key=f"enable_{key}"
         )
-        
-        # Slider state is managed by Streamlit via its key
-        factor = st.slider(
-            f"Speed for {preset['suffix']}",
-            min_value=0.1,
-            max_value=2.0,
-            value=preset['default_factor'], # Streamlit uses key to restore state on reruns
-            step=0.05,
-            format="%.2f",
-            key=f"factor_{key}",
-            disabled=not enabled # Disable based on checkbox's CURRENT value in this run
-        )
-        
+
+        if mode == "speed":
+            # Slider state is managed by Streamlit via its key
+            factor = st.slider(
+                f"Speed for {preset['suffix']}",
+                min_value=0.1,
+                max_value=2.0,
+                value=preset['defaults']['speed_factor'], # Streamlit uses key to restore state on reruns
+                step=0.05,
+                format="%.2f",
+                key=f"factor_{key}",
+                disabled=not enabled # Disable based on checkbox's CURRENT value in this run
+            )
+            label = f"{factor * 100:.0f}%"
+        else:
+            semitones = st.slider(
+                f"Pitch for {preset['suffix']}",
+                min_value=-12,
+                max_value=12,
+                value=preset['defaults']['pitch_semitones'],
+                step=1,
+                key=f"semitones_{key}",
+                disabled=not enabled
+            )
+            factor = 2 ** (semitones / 12)
+            label = f"{semitones:+d} st"
+
         # Store the current state for later use if processing starts
-        selections_for_processing[key] = {"enabled": enabled, "factor": factor, "suffix": preset['suffix']}
+        selections_for_processing[key] = {
+            "enabled": enabled,
+            "factor": factor,
+            "suffix": preset['suffix'],
+            "mode": mode,
+            "label": label
+        }
 
 # --- End Sidebar Controls ---
 
@@ -104,7 +150,7 @@ if start_processing and uploaded_file is not None:
         st.stop()
 
     # --- Process Files --- 
-    processed_files = {} # Store {'key': {'data': bytes, 'suffix': str, 'factor': float or None}}
+    processed_files = {} # Store {'key': {'data': bytes, 'suffix': str, 'factor': float or None, 'mode': str | None, 'label': str | None}}
     
     # Use the selections captured during the sidebar rendering pass
     # No need to read from st.session_state here
@@ -128,7 +174,9 @@ if start_processing and uploaded_file is not None:
                 "data": output_buffer_orig.getvalue(),
                 "suffix": "Original (processed)",
                 "filename": original_file_wav_name, # Filename for zip and download
-                "factor": None # No speed factor for original
+                "factor": None, # No speed factor for original
+                "mode": None,
+                "label": None
             }
             steps_done += 1
             progress_bar.progress(steps_done / total_steps, text=f"Processing... ({steps_done}/{total_steps})")
@@ -145,8 +193,10 @@ if start_processing and uploaded_file is not None:
             if selection["enabled"]:
                 factor = selection["factor"]
                 suffix = selection["suffix"]
+                label = selection["label"]
+                selection_mode = selection["mode"]
                 preset_key = f"preset_{key}"
-                
+
                 try:
                     # Change the speed
                     modified_audio = audio._spawn(audio.raw_data, overrides={
@@ -169,7 +219,9 @@ if start_processing and uploaded_file is not None:
                         "data": output_buffer.getvalue(),
                         "suffix": suffix,
                         "filename": f"{original_filename} ({suffix}).wav",
-                        "factor": factor
+                        "factor": factor,
+                        "mode": selection_mode,
+                        "label": label
                     }
                     steps_done += 1
                     progress_bar.progress(steps_done / total_steps, text=f"Processing... ({steps_done}/{total_steps})")
@@ -211,23 +263,30 @@ if start_processing and uploaded_file is not None:
         with st.expander("View all processed versions", expanded=False):
             # Display original first if it exists
             if "original" in processed_files:
-                 info = processed_files["original"]
-                 st.subheader(f"{info['suffix']}")
-                 st.audio(info['data'], format="audio/wav")
-                 st.download_button(
+                info = processed_files["original"]
+                st.subheader(f"{info['suffix']}")
+                st.audio(info['data'], format="audio/wav")
+                st.download_button(
                     label=f"Download {info['suffix']}",
                     data=info['data'],
                     file_name=info['filename'],
                     mime="audio/wav",
                     key="download_original_generator"
-                 )
-                 st.divider()
+                )
+                st.divider()
 
-            # Display speed versions
+            # Display processed versions
             for key in sorted_keys:
-                 if key != "original": # Skip the original we already displayed
+                if key != "original": # Skip the original we already displayed
                     info = processed_files[key]
-                    st.subheader(f"{info['suffix']} (Speed: {info['factor']:.2f})")
+                    descriptor = None
+                    if info.get("mode") == "pitch" and info.get("label"):
+                        descriptor = f"Pitch: {info['label']}"
+                    elif info.get("mode") == "speed" and info.get("label"):
+                        descriptor = f"Speed: {info['label']}"
+
+                    title = info['suffix'] if not descriptor else f"{info['suffix']} ({descriptor})"
+                    st.subheader(title)
                     st.audio(info['data'], format="audio/wav")
                     st.download_button(
                         label=f"Download {info['suffix']} version",
@@ -236,6 +295,6 @@ if start_processing and uploaded_file is not None:
                         mime="audio/wav",
                         key=f"download_{key}_generator"
                     )
-                    st.divider() 
+                    st.divider()
     else:
         st.warning("Failed to process any versions.") 
