@@ -166,7 +166,7 @@ if start_processing and uploaded_file is not None:
         status_placeholder_orig.write("Processing original...")
         try:
             original_processed = audio.set_frame_rate(44100).set_sample_width(2)
-            original_processed = normalize(original_processed, headroom=0.0) # Normalize to 0dB
+            original_processed = normalize(original_processed, headroom=0.3) # Normalize to 0dB
             
             output_buffer_orig = io.BytesIO()
             original_processed.export(output_buffer_orig, format="wav")
@@ -208,7 +208,7 @@ if start_processing and uploaded_file is not None:
                     modified_audio = modified_audio.set_sample_width(2)
                     
                     # Normalize audio to 0dB
-                    modified_audio = normalize(modified_audio, headroom=0.0)
+                    modified_audio = normalize(modified_audio, headroom=0.3)
 
                     # Export the modified audio to bytes as WAV
                     output_buffer = io.BytesIO()
