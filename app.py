@@ -42,6 +42,10 @@ with st.sidebar:
             "suffix": "Mega Slowed",
             "defaults": {"speed_factor": 0.5, "speed_percent": 50, "pitch_semitones": -12}
         },
+        "SPED_UP": {
+            "suffix": "Sped Up",
+            "defaults": {"speed_factor": 1.2, "speed_percent": 120, "pitch_semitones": 3}
+        },
         "SUPER_SPED_UP": {
             "suffix": "Super Sped Up",
             "defaults": {"speed_factor": 1.4, "speed_percent": 140, "pitch_semitones": 5}
@@ -61,7 +65,7 @@ with st.sidebar:
 
     for key, preset in fixed_presets.items():
         # Set default state for the checkbox (only used on first run for this key)
-        default_enabled = False if key in ("SUPER_SPED_UP", "MEGA_SLOWED") else True
+        default_enabled = False if key in ("MEGA_SLOWED", "SPED_UP", "SUPER_SPED_UP") else True
 
         # Checkbox state is managed by Streamlit via its key
         enabled = st.checkbox(
@@ -166,7 +170,7 @@ if start_processing and uploaded_file is not None:
         status_placeholder_orig.write("Processing original...")
         try:
             original_processed = audio.set_frame_rate(44100).set_sample_width(2)
-            original_processed = normalize(original_processed, headroom=0.0) # Normalize to 0dB
+            original_processed = normalize(original_processed, headroom=0.3) # Normalize to 0dB
             
             output_buffer_orig = io.BytesIO()
             original_processed.export(output_buffer_orig, format="wav")
@@ -208,7 +212,7 @@ if start_processing and uploaded_file is not None:
                     modified_audio = modified_audio.set_sample_width(2)
                     
                     # Normalize audio to 0dB
-                    modified_audio = normalize(modified_audio, headroom=0.0)
+                    modified_audio = normalize(modified_audio, headroom=0.3)
 
                     # Export the modified audio to bytes as WAV
                     output_buffer = io.BytesIO()
