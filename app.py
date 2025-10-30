@@ -34,13 +34,13 @@ with st.sidebar:
             "suffix": "Ultra Slowed",
             "defaults": {"speed_factor": 0.6, "speed_percent": 60, "pitch_semitones": -9}
         },
-        "SPED_UP": {
-            "suffix": "Sped Up",
-            "defaults": {"speed_factor": 1.2, "speed_percent": 120, "pitch_semitones": 3}
-        },
         "MEGA_SLOWED": {
             "suffix": "Mega Slowed",
             "defaults": {"speed_factor": 0.5, "speed_percent": 50, "pitch_semitones": -12}
+        },
+        "SPED_UP": {
+            "suffix": "Sped Up",
+            "defaults": {"speed_factor": 1.2, "speed_percent": 120, "pitch_semitones": 3}
         },
         "SUPER_SPED_UP": {
             "suffix": "Super Sped Up",
@@ -61,7 +61,7 @@ with st.sidebar:
 
     for key, preset in fixed_presets.items():
         # Set default state for the checkbox (only used on first run for this key)
-        default_enabled = False if key in ("SUPER_SPED_UP", "MEGA_SLOWED") else True
+        default_enabled = False if key in ("MEGA_SLOWED", "SPED_UP", "SUPER_SPED_UP") else True
 
         # Checkbox state is managed by Streamlit via its key
         enabled = st.checkbox(
