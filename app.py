@@ -32,11 +32,11 @@ with st.sidebar:
         },
         "ULTRA_SLOWED": {
             "suffix": "Ultra Slowed",
-            "defaults": {"speed_factor": 0.6, "speed_percent": 60, "pitch_semitones": -9}
+            "defaults": {"speed_factor": 0.65, "speed_percent": 65, "pitch_semitones": -7}
         },
         "SPED_UP": {
             "suffix": "Sped Up",
-            "defaults": {"speed_factor": 1.2, "speed_percent": 120, "pitch_semitones": 3}
+            "defaults": {"speed_factor": 1.2, "speed_percent": 120, "pitch_semitones": 2}
         },
         "MEGA_SLOWED": {
             "suffix": "Mega Slowed",
@@ -44,7 +44,7 @@ with st.sidebar:
         },
         "SUPER_SPED_UP": {
             "suffix": "Super Sped Up",
-            "defaults": {"speed_factor": 1.4, "speed_percent": 140, "pitch_semitones": 6}
+            "defaults": {"speed_factor": 1.4, "speed_percent": 140, "pitch_semitones": 5}
         }
     }
 
