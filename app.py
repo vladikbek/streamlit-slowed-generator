@@ -23,27 +23,27 @@ with st.sidebar:
     # Define fixed presets with default values for speed (percentage) and pitch (semitones)
     fixed_presets = {
         "SLOWED": {
-            "suffix": "Slowed",
+            "suffix": "SLOWED",
             "defaults": {"speed_factor": 0.9, "speed_percent": 90, "pitch_semitones": -2}
         },
         "SUPER_SLOWED": {
-            "suffix": "Super Slowed",
+            "suffix": "SUPER SLOWED",
             "defaults": {"speed_factor": 0.8, "speed_percent": 80, "pitch_semitones": -4}
         },
         "ULTRA_SLOWED": {
-            "suffix": "Ultra Slowed",
+            "suffix": "ULTRA SLOWED",
             "defaults": {"speed_factor": 0.65, "speed_percent": 65, "pitch_semitones": -7}
         },
         "MEGA_SLOWED": {
-            "suffix": "Mega Slowed",
+            "suffix": "MEGA SLOWED",
             "defaults": {"speed_factor": 0.5, "speed_percent": 50, "pitch_semitones": -10}
         },
         "SPED_UP": {
-            "suffix": "Sped Up",
+            "suffix": "SPED UP",
             "defaults": {"speed_factor": 1.2, "speed_percent": 120, "pitch_semitones": 2}
         },
         "SUPER_SPED_UP": {
-            "suffix": "Super Sped Up",
+            "suffix": "SUPER SPED UP",
             "defaults": {"speed_factor": 1.4, "speed_percent": 140, "pitch_semitones": 5}
         }
     }
@@ -105,6 +105,14 @@ with st.sidebar:
             "label": label
         }
 
+    st.divider()
+
+    include_original = st.checkbox(
+        "Include original version in zip archive",
+        value=True,
+        key="include_original"
+    )
+
 # --- End Sidebar Controls ---
 
 # Allow uploading various audio formats supported by Pydub/ffmpeg
@@ -120,13 +128,6 @@ start_processing = st.button(
     disabled=(uploaded_file is None), 
     key="start_generator", 
     use_container_width=True
-)
-
-# Add checkbox for including original version
-include_original = st.checkbox(
-    "Include original version in zip archive",
-    value=True,  # Default to True (on by default)
-    key="include_original"
 )
 
 # Placeholder for status messages
