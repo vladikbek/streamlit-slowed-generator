@@ -105,6 +105,8 @@ with st.sidebar:
             "label": label
         }
 
+    st.divider()
+
     include_original = st.checkbox(
         "Include original version in zip archive",
         value=True,
