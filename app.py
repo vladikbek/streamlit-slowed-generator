@@ -55,6 +55,7 @@ with st.sidebar:
         key="mode_selector"
     )
     mode = "speed" if mode_label.startswith("Speed") else "pitch"
+    st.divider()
 
     # Store the current selections from the sidebar for processing
     selections_for_processing = {}
