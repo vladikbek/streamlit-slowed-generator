@@ -1,1 +1,5 @@
-# Use Streamlit's default theme colors by leaving the theme configuration empty.
+[theme]
+primaryColor = "#4a5759"
+secondaryBackgroundColor = "#F5F5F5"
+linkColor = "#AB494B"
+borderColor = "#D6D6D6"
